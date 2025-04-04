@@ -1,5 +1,6 @@
 'use client';
 import { request } from 'http';
+
 /**
  * En next.js los componentes se dividen en dos tipos: estaticos y de tipo cliente;
  * - Los componetes estaticos son los que no tienen logica, solo se encargan de mostrar la informacion 
