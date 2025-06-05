@@ -79,8 +79,7 @@ export default function LoginPage() {
 
           <input type="hidden" value={csrfToken} name="csrfToken" />
           <button type="submit" className="button-primary">Iniciar Sesión</button>
-          <a href="/auth/signup" className="button-secondary">Crear Nueva Cuenta</a>
-
+          <a href="/login/signup" className="button-secondary">Crear Nueva Cuenta</a>
         </form>
       </div>
     </div>
