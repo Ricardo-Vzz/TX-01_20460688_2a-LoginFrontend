@@ -11,8 +11,8 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await fetch('http://localhost:3001/dashboard', {
-          credentials: 'include', // 👈 Para enviar cookies
+        const res = await fetch('/api/dashboard', {
+            credentials: 'include',
         });
 
         if (res.status === 401) {
@@ -34,10 +34,11 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleLogout = async () => {
-    await fetch('http://localhost:3001/logout', {
-      method: 'POST',
-      credentials: 'include',
+    await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include',
     });
+
     router.push('/login');
   };
 

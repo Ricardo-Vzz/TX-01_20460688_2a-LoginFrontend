@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import '../estilos.css';
 
 interface LoginRequest {
@@ -9,6 +10,7 @@ interface LoginRequest {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
@@ -34,6 +36,12 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
+      
+      if (response.ok) {
+        router.push("/dashboard");
+      } else {
+        alert(data.error || "Error en el inicio de sesión");
+      }
 
       if (data.error) {
         alert(data.error);
