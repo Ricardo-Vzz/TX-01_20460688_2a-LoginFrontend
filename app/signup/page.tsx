@@ -2,15 +2,17 @@
 import { useState, useEffect } from 'react';
 import '../estilos.css';
 
-interface LoginRequest {
+interface RegisterRequest {
   username: string;
   password: string;
+  confirmPassword: string;
   csrfToken: string;
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
@@ -24,10 +26,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const request: LoginRequest = { username, password, csrfToken };
+    const request: RegisterRequest = {
+      username,
+      password,
+      confirmPassword,
+      csrfToken,
+    };
 
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('http://localhost:3001/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(request),
@@ -40,17 +47,17 @@ export default function LoginPage() {
         return;
       }
 
-      alert('Inicio de sesión exitoso');
+      alert('Cuenta creada correctamente');
     } catch {
-      alert('Error en el inicio de sesión');
+      alert('Error al registrar la cuenta');
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-title">Bienvenido</h1>
-        <p className="login-subtitle">Inicia sesión en tu cuenta para continuar</p>
+        <h1 className="login-title">Crear Cuenta</h1>
+        <p className="login-subtitle">Ingresa los datos para registrarte</p>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
@@ -77,9 +84,21 @@ export default function LoginPage() {
             />
           </div>
 
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="input"
+            />
+          </div>
+
           <input type="hidden" value={csrfToken} name="csrfToken" />
-          <button type="submit" className="button-primary">Iniciar Sesión</button>
-          <a href="/signup" className="button-secondary">Crear Nueva Cuenta</a>
+          <button type="submit" className="button-primary">Registrarse</button>
+          <a href="/login" className="button-secondary">Volver al Inicio de Sesión</a>
         </form>
       </div>
     </div>
