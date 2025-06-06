@@ -67,7 +67,7 @@ export default function LoginPage() {
             />
           </div>
           <button type="submit" className="button-primary">Iniciar Sesión</button>
-          <a href="/api/register" className="button-secondary">Crear Nueva Cuenta</a>
+          <a href="/register" className="button-secondary">Crear Nueva Cuenta</a>
         </form>
       </div>
     </div>
