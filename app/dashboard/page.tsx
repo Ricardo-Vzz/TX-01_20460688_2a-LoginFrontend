@@ -11,7 +11,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await fetch('/api/dashboard', {
+        const res = await fetch('http://localhost:3001/dashboard', {
             credentials: 'include',
         });
 
@@ -34,7 +34,7 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleLogout = async () => {
-    await fetch('/api/logout', {
+    await fetch('http://localhost:3001/logout', {
         method: 'POST',
         credentials: 'include',
     });

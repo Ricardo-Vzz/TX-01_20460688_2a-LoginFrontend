@@ -1,106 +1,72 @@
 'use client';
-import { useState, useEffect } from 'react';
-import '../estilos.css';
+import { useEffect, useState } from 'react';
 
-interface RegisterRequest {
+interface DashboardResponse {
   username: string;
-  password: string;
-  confirmPassword: string;
-  csrfToken: string;
+  message: string;
 }
 
-export default function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [csrfToken, setCsrfToken] = useState('');
+export default function DashboardPage() {
+  const [user, setUser] = useState<DashboardResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
+  // Verificar sesión al montar
   useEffect(() => {
-    const fetchCsrfToken = async () => {
-      const response = await fetch('http://localhost:3001/csrf-token');
-      const data = await response.json();
-      setCsrfToken(data.csrfToken);
+    const verificarSesion = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/dashboard', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.status === 401) {
+          setError('Sesión no válida o expirada. Por favor, inicia sesión nuevamente.');
+          setLoading(false);
+          return;
+        }
+
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError('Error al verificar la sesión.');
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchCsrfToken();
+
+    verificarSesion();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const request: RegisterRequest = {
-      username,
-      password,
-      confirmPassword,
-      csrfToken,
-    };
-
+  const cerrarSesion = async () => {
     try {
-      const response = await fetch('http://localhost:3001/register', {
+      await fetch('http://localhost:3001/logout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request),
+        credentials: 'include',
       });
-
-      const data = await response.json();
-
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-
-      alert('Cuenta creada correctamente');
+      setUser(null);
+      setError('Sesión cerrada');
     } catch {
-      alert('Error al registrar la cuenta');
+      setError('Error al cerrar sesión');
     }
   };
 
-  return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1 className="login-title">Crear Cuenta</h1>
-        <p className="login-subtitle">Ingresa los datos para registrarte</p>
+  if (loading) return <p>Cargando sesión...</p>;
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="username">Usuario</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              required
-              onChange={(e) => setUsername(e.target.value)}
-              className="input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              onChange={(e) => setPassword(e.target.value)}
-              className="input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              required
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input"
-            />
-          </div>
-
-          <input type="hidden" value={csrfToken} name="csrfToken" />
-          <button type="submit" className="button-primary">Registrarse</button>
-          <a href="/login" className="button-secondary">Volver al Inicio de Sesión</a>
-        </form>
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <a href="/login">Ir al inicio de sesión</a>
       </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '1rem' }}>
+      <h1>Bienvenido, {user?.username}</h1>
+      <p>{user?.message}</p>
+      <button onClick={cerrarSesion}>Cerrar Sesión</button>
     </div>
   );
 }

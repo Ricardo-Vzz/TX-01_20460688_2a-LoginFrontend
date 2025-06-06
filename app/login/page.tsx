@@ -6,28 +6,16 @@ import '../estilos.css';
 interface LoginRequest {
   username: string;
   password: string;
-  csrfToken: string;
 }
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [csrfToken, setCsrfToken] = useState('');
-
-  useEffect(() => {
-    const fetchCsrfToken = async () => {
-      const response = await fetch('http://localhost:3001/csrf-token');
-      const data = await response.json();
-      setCsrfToken(data.csrfToken);
-    };
-    fetchCsrfToken();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const request: LoginRequest = { username, password, csrfToken };
-
+    const request: LoginRequest = { username, password};
     try {
       const response = await fetch('http://localhost:3001/login', {
         method: 'POST',
@@ -84,8 +72,6 @@ export default function LoginPage() {
               className="input"
             />
           </div>
-
-          <input type="hidden" value={csrfToken} name="csrfToken" />
           <button type="submit" className="button-primary">Iniciar Sesión</button>
           <a href="/signup" className="button-secondary">Crear Nueva Cuenta</a>
         </form>
