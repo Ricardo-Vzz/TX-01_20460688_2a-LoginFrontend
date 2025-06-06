@@ -1,6 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from "next/navigation"
 import '../estilos.css';
 
 interface LoginRequest {
@@ -17,26 +17,20 @@ export default function LoginPage() {
     e.preventDefault();
     const request: LoginRequest = { username, password};
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(request),
       });
-
-      const data = await response.json();
       
-      if (response.ok) {
-        router.push("/dashboard");
-      } else {
-        alert(data.error || "Error en el inicio de sesión");
+      if (!response.ok) {
+        console.error('Error en el inicio de sesión');
       }
-
-      if (data.error) {
-        alert(data.error);
-        return;
+      if (response.ok){
+      console.log('Inicio de sesión exitoso');
+      router.push('/dashboard');
       }
-
-      alert('Inicio de sesión exitoso');
     } catch {
       alert('Error en el inicio de sesión');
     }
@@ -73,7 +67,7 @@ export default function LoginPage() {
             />
           </div>
           <button type="submit" className="button-primary">Iniciar Sesión</button>
-          <a href="/signup" className="button-secondary">Crear Nueva Cuenta</a>
+          <a href="/api/register" className="button-secondary">Crear Nueva Cuenta</a>
         </form>
       </div>
     </div>

@@ -15,7 +15,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const verificarSesion = async () => {
       try {
-        const response = await fetch('http://localhost:3001/dashboard', {
+        const response = await fetch('/api/signup', {
           method: 'GET',
           credentials: 'include',
         });
@@ -40,7 +40,7 @@ export default function DashboardPage() {
 
   const cerrarSesion = async () => {
     try {
-      await fetch('http://localhost:3001/logout', {
+      await fetch('/logout', {
         method: 'POST',
         credentials: 'include',
       });
